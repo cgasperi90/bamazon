@@ -41,6 +41,7 @@ connection.connect(function(err) {
             lowStock();
         } else if (answer.start === "Add To Inventory") {
             console.log("Add To Inventory");
+            showItems();
         } else if (answer.start === "Add New Product") {
             console.log("Add New Product");
         } else {
@@ -90,9 +91,78 @@ connection.connect(function(err) {
             } else {
                 console.log("-------------------------------------");
                 console.log(results[i].product_name + " has " + results[i].stock_quantity + " units.");
+                console.log(results[i].product_name + " has more than 5 units.");
             } 
         }
         startProgram();
     })
   }
 
+function updateStock() {
+    inquirer.prompt([
+        {
+            name: "update",
+            type: "input",
+            message: "Which item would you like to update?",
+        },
+        {
+            name: "amount",
+            type: "input",
+            message: "How many of these items are you adding?"
+        }
+    ]).then(function(answer) {
+
+
+        
+        connection.query("SELECT * FROM products", function(err, results) {
+
+            if (err) throw err;
+            var chosenItem;
+            for (var i = 0; i < results.length; i++) {
+                if (results[i].item_id === parseInt(answer.update)) {
+                    chosenItem = results[i];
+                }
+            }
+ 
+
+            connection.query("UPDATE products SET ? WHERE ?", 
+            [
+                {
+                    stock_quantity: (chosenItem.stock_quantity + parseInt(answer.amount))
+                },
+                {
+                    item_id: chosenItem.item_id
+                }
+            ], 
+                function(err, res) {
+                    if (err) throw err;
+
+                    console.log("---------------------------------------------------");
+                    console.log(chosenItem.product_name + " has been updated!");
+                    console.log(chosenItem.product_name + " now has " + (chosenItem.stock_quantity + parseInt(answer.amount)) + " units.");
+                    console.log("---------------------------------------------------");
+                    startProgram();
+                }
+            )
+        });
+    });
+}
+
+function showItems() {
+    connection.query("SELECT * FROM products", function(err, results) {
+        if (err) throw err;
+        
+
+        for (var i = 0; i < results.length; i++) {
+            
+            console.log("\tItem Number: " + results[i].item_id + 
+            " | " + "Item: " + results[i].product_name + 
+            " | " + "Department: " + results[i].department_name + 
+            " | " + "Price: $" + results[i].price + 
+            " | " + "Stock: " + results[i].stock_quantity + "\n");
+            
+        }
+        updateStock();
+
+    });
+}
