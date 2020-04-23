@@ -1,4 +1,3 @@
-
 //Here I have my require variables for the NPM packages.
 var inquirer = require("inquirer");
 var mysql = require("mysql");
@@ -44,6 +43,7 @@ connection.connect(function(err) {
             showItems();
         } else if (answer.start === "Add New Product") {
             console.log("Add New Product");
+            addItems();
         } else {
             console.log("You have been logged out...");
             connection.end();
@@ -165,4 +165,46 @@ function showItems() {
         updateStock();
 
     });
+}
+
+function addItems() {
+    inquirer.prompt([
+        {
+            name: "addItem",
+            type: "input",
+            message: "Name of the item?"
+        }, 
+        {
+            name: "department",
+            type: "input",
+            message: "Name of the department"
+        }, 
+        {
+            name: "price",
+            type: "input",
+            message: "Price of the item?"
+        }, 
+        {
+            name: "stock",
+            type: "input",
+            message: "How many items were received?"
+        }
+    ]).then(function(answer) {
+
+        connection.query("INSERT INTO products SET ?", 
+        {
+            product_name: answer.addItem,
+            department_name: answer.department,
+            price: answer.price || 0,
+            stock_quantity: answer.stock || 0
+
+        }, function(err, res) {
+            if (err) throw err;
+
+            console.log("---------------------------------------------------");
+            console.log(res.affectedRows + " New item added!");
+            console.log("---------------------------------------------------");
+            startProgram();
+        });
+    });   
 }
