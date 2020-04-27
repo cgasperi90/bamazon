@@ -18,3 +18,5 @@ In bamazon, I used multiple technologies in order to achieve success in creating
 ## Organization
 This program contains all of its code and is ran from one single Javascript file. Along with the single Javacript file, the program gets its information from the MYSQL database that contains all of the items available for sale in the app. The app also has a secondary JS file which serves as a manager portal so that the inventory of the store can managed and updated. For example, an employee can update the inventory of an item when it goes below a certain number, or an employee can add an item to the store.
 
+## Video
+[![Bamazon](http://img.youtube.com/vi/9vY1uJ0GQ9E/0.jpg)](http://www.youtube.com/watch?v=9vY1uJ0GQ9E "Bamazon Preview")
